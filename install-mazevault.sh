@@ -542,10 +542,11 @@ cd "${INSTALL_DIR}"
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then
   if [[ -z "${GITHUB_USER:-}" ]]; then
     warn "GITHUB_TOKEN is set but --user is missing. Cannot auto-login."
-    warn "Please run: echo \$GITHUB_TOKEN | $RUNTIME login $REGISTRY -u YOUR_USERNAME --password-stdin"
+    warn "Please run: echo \$GITHUB_TOKEN | $RUNTIME login ghcr.io -u YOUR_USERNAME --password-stdin"
   else
-    info "Logging in to $REGISTRY as $GITHUB_USER..."
-    echo "$GITHUB_TOKEN" | $RUNTIME login "$REGISTRY" -u "$GITHUB_USER" --password-stdin || warn "Login failed, continuing..."
+    REGISTRY_HOST=$(echo "$REGISTRY" | cut -d'/' -f1)
+    info "Logging in to ${REGISTRY_HOST} as $GITHUB_USER..."
+    echo "$GITHUB_TOKEN" | $RUNTIME login "${REGISTRY_HOST}" -u "$GITHUB_USER" --password-stdin || warn "Login failed, continuing..."
   fi
 fi
 
