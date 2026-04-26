@@ -90,6 +90,9 @@ services:
       MAZEVAULT_ENV: ${MAZEVAULT_ENV:-production}
       MAZEVAULT_ORCHESTRATOR_MODE: ${MAZEVAULT_ORCHESTRATOR_MODE:-false}
       APP_VERSION: ${APP_VERSION:-latest}
+      PORT: ${PORT:-8443}
+      GIN_MODE: ${GIN_MODE:-release}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       FRONTEND_URL: ${FRONTEND_URL:-https://localhost}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://localhost}
@@ -127,6 +130,10 @@ services:
       AZURE_MANAGED_IDENTITY_CLIENT_ID: ${AZURE_MANAGED_IDENTITY_CLIENT_ID:-}
       AZURE_TENANT_ID: ${AZURE_TENANT_ID:-}
       AZURE_DEPLOYMENT: ${AZURE_DEPLOYMENT:-false}
+      # License
+      LICENSE_SERVER_URL: ${LICENSE_SERVER_URL:-https://mazevault-license-server-ezoz34eavq-ew.a.run.app}
+      BUILD_AUTH_SECRET: ${BUILD_AUTH_SECRET:-}
+      ENABLE_LICENSE_CHECK: ${ENABLE_LICENSE_CHECK:-true}
       # Agent Binary Proxy (optional)
       AGENT_BINARY_GITHUB_TOKEN: ${AGENT_BINARY_GITHUB_TOKEN:-}
       AGENT_BINARY_CACHE_DIR: ${AGENT_BINARY_CACHE_DIR:-/data/agent-binaries}
