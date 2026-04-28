@@ -301,6 +301,9 @@ SMTP_FROM=
 # AGENT_DOWNLOAD_BASE_URL=
 # AGENT_VERSION=latest
 
+# Public Backend URL (optional — fallback for agent self-update download links)
+# MAZEVAULT_SERVER_URL=
+
 # Gateway Mode (optional)
 # MAZEVAULT_MODE=primary
 # PRIMARY_BACKEND_URL=
@@ -455,6 +458,7 @@ services:
       AGENT_ROLLOUT_PERCENTAGE: ${AGENT_ROLLOUT_PERCENTAGE:-100}
       AGENT_MAX_CONCURRENT_DOWNLOADS: ${AGENT_MAX_CONCURRENT_DOWNLOADS:-10}
       AGENT_DOWNLOAD_BASE_URL: ${AGENT_DOWNLOAD_BASE_URL:-}
+      MAZEVAULT_SERVER_URL: ${MAZEVAULT_SERVER_URL:-}
       AGENT_VERSION: ${AGENT_VERSION:-latest}
       # Gateway Mode (optional — multi-DC satellite)
       MAZEVAULT_MODE: ${MAZEVAULT_MODE:-primary}
