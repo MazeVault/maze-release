@@ -131,7 +131,7 @@ services:
       AZURE_TENANT_ID: ${AZURE_TENANT_ID:-}
       AZURE_DEPLOYMENT: ${AZURE_DEPLOYMENT:-false}
       # License
-      LICENSE_SERVER_URL: ${LICENSE_SERVER_URL:-https://mazevault-license-server-ezoz34eavq-ew.a.run.app}
+      LICENSE_SERVER_URL: ${LICENSE_SERVER_URL:-https://license.mazevault.com}
       BUILD_AUTH_SECRET: ${BUILD_AUTH_SECRET:-}
       ENABLE_LICENSE_CHECK: ${ENABLE_LICENSE_CHECK:-true}
       # Agent Binary Proxy (optional)

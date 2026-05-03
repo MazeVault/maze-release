@@ -248,7 +248,7 @@ MAZEVAULT_REGION=EU
 # LICENSE SERVER CONFIGURATION
 # ============================================================================
 # License server endpoints
-LICENSE_SERVER_URL=https://mazevault-license-server-ezoz34eavq-ew.a.run.app
+LICENSE_SERVER_URL=https://license.mazevault.com
 # Enable license checking
 ENABLE_LICENSE_CHECK=true
 # Build Authentication Secret - SAME FOR ALL BUILDS
