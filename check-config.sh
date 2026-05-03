@@ -139,6 +139,7 @@ REF_ENV_KEYS=(
 
 # Optional keys — reported as info, not errors
 OPTIONAL_ENV_KEYS=(
+  OCSP_PORT
   ENTRA_CLIENT_ID ENTRA_CLIENT_SECRET ENTRA_TENANT_ID ENTRA_REDIRECT_URI
   MAZEVAULT_ENFORCE_OIDC_NONCE
   AZURE_AD_TENANT_ID AZURE_AD_ALLOWED_TENANTS AZURE_AD_JWKS_CACHE_TTL
@@ -157,6 +158,10 @@ OPTIONAL_ENV_KEYS=(
   MAZEVAULT_ACME_DNS_PROVIDER MAZEVAULT_ACME_DNS_API_TOKEN
   MAZEVAULT_KEYTAB_ENABLED MAZEVAULT_KEYTAB_MAX_SIZE_MB MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS
 )
+
+# GitHub Actions / Azure deployment reference vars documented in .env.example
+# are intentionally not checked here because customer installs do not consume
+# repository/environment configuration from GitHub.
 
 env_ok=0; env_miss=0
 for k in "${REF_ENV_KEYS[@]}"; do
