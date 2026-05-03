@@ -241,6 +241,7 @@ services:
         condition: service_started
     environment:
       - BACKEND_HOST=backend
+      - DOCS_URL=${DOCS_URL:-https://localhost:8088}
       - MAZEVAULT_DOMAIN=${MAZEVAULT_DOMAIN:-localhost}
       - MAZEVAULT_ORCHESTRATOR_MODE=${MAZEVAULT_ORCHESTRATOR_MODE:-false}
     volumes:

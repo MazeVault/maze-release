@@ -571,6 +571,7 @@ services:
         condition: service_healthy
     environment:
       - BACKEND_HOST=backend
+      - DOCS_URL=${DOCS_URL:-https://${MAZEVAULT_DOMAIN:-localhost}:8088}
       - MAZEVAULT_DOMAIN=${MAZEVAULT_DOMAIN:-localhost}
       - MAZEVAULT_ORCHESTRATOR_MODE=${MAZEVAULT_ORCHESTRATOR_MODE:-false}
       - VITE_API_URL=https://${MAZEVAULT_DOMAIN:-localhost}:8443
