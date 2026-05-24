@@ -117,6 +117,7 @@ done
 
 # ── Generate .env ───────────────────────────────────────────────────────────
 generate_secret() { openssl rand -base64 "$1" 2>/dev/null | tr -d '\n/+='; }
+generate_master_key() { openssl rand -base64 32; }
 
 ENV_FILE="${INSTALL_DIR}/.env"
 if [[ ! -f "${ENV_FILE}" ]]; then
@@ -127,7 +128,7 @@ if [[ ! -f "${ENV_FILE}" ]]; then
     sed -i "s|__POSTGRES_PASSWORD__|$(generate_secret 32)|g" "${ENV_FILE}"
     sed -i "s|__REDIS_PASSWORD__|$(generate_secret 24)|g"    "${ENV_FILE}"
     sed -i "s|__JWT_SECRET__|$(generate_secret 48)|g"        "${ENV_FILE}"
-    sed -i "s|__MASTER_KEY__|$(generate_secret 32)|g"        "${ENV_FILE}"
+    sed -i "s|__MASTER_KEY__|$(generate_master_key)|g"       "${ENV_FILE}"
     sed -i "s|__SESSION_SECRET__|$(generate_secret 32)|g"    "${ENV_FILE}"
   else
     # Fallback: generate minimal .env
@@ -139,7 +140,7 @@ POSTGRES_PASSWORD=$(generate_secret 32)
 POSTGRES_DB=mazevault
 REDIS_PASSWORD=$(generate_secret 24)
 JWT_SECRET=$(generate_secret 48)
-MASTER_KEY=$(generate_secret 32)
+MASTER_KEY=$(generate_master_key)
 SESSION_SECRET=$(generate_secret 32)
 MAZEVAULT_TLS_SKIP_INIT=false
 MAZEVAULT_DOMAIN=localhost
