@@ -1,0 +1,25 @@
+Thank you for installing {{ .Chart.Name }} (v{{ .Chart.Version }}).
+
+Your release is named: {{ .Release.Name }}
+Namespace:            {{ include "mazevault-customer.namespace" . }}
+
+{{- if .Values.global.ingress.enabled }}
+
+Access URLs:
+  Application: https://{{ .Values.global.ingress.appHost }}
+  {{- if and .Values.docs.enabled .Values.global.ingress.docsHost }}
+  Documentation: https://{{ .Values.global.ingress.docsHost }}
+  {{- end }}
+  {{- if and .Values.ocsp.enabled .Values.global.ingress.ocspHost }}
+  OCSP Responder: https://{{ .Values.global.ingress.ocspHost }}
+  {{- end }}
+{{- end }}
+
+Deployed components:
+  Backend:  {{ if .Values.backend.enabled }}enabled ({{ .Values.backend.replicaCount }} replica(s)){{ else }}disabled{{ end }}
+  Frontend: {{ if .Values.frontend.enabled }}enabled ({{ .Values.frontend.replicaCount }} replica(s)){{ else }}disabled{{ end }}
+  Docs:     {{ if .Values.docs.enabled }}enabled ({{ .Values.docs.replicaCount }} replica(s)){{ else }}disabled{{ end }}
+  OCSP:     {{ if .Values.ocsp.enabled }}enabled ({{ .Values.ocsp.replicaCount }} replica(s)){{ else }}disabled{{ end }}
+
+To verify the deployment:
+  kubectl get pods -n {{ include "mazevault-customer.namespace" . }} -l app.kubernetes.io/instance={{ .Release.Name }}

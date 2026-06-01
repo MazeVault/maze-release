@@ -1,0 +1,322 @@
+nameOverride: ""
+fullnameOverride: ""
+
+global:
+  namespace: ""
+  environment: "customer"
+  rolloutNonce: ""
+  reloader:
+    enabled: false
+    annotations:
+      reloader.stakater.com/auto: "true"
+  commonLabels: {}
+  imagePullSecrets: []
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  workloadIdentity:
+    enabled: true
+    clientId: ""
+  keyVault:
+    enabled: true
+    targetSecretName: ""
+    secretStore:
+      create: true
+      kind: SecretStore
+      name: ""
+      refreshInterval: 5m
+      vaultUrl: https://__SET_KEYVAULT_NAME__.vault.azure.net
+      tenantId: ""
+    secretKeys:
+      databasePassword: mazevault-postgres-password
+      databaseUrl: ""
+      redisPassword: mazevault-redis-password
+      redisUrl: ""
+      masterKey: mazevault-master-key
+      jwtKey: mazevault-jwt-key
+      sessionSecret: mazevault-session-secret
+      buildAuthSecret: mazevault-build-auth-secret
+      smtpPassword: ""
+      o365ClientSecret: ""
+      entraClientId: ""
+      entraClientSecret: ""
+      entraTenantId: ""
+      agentBinaryGithubToken: ""
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    appHost: mazevault.example.com
+    docsHost: docs.mazevault.example.com
+    ocspHost: ""
+    tls:
+      enabled: true
+      secretName: mazevault-customer-tls
+      clusterIssuer: letsencrypt-prod
+
+externalDatabase:
+  host: __SET_POSTGRES_HOST__
+  port: 5432
+  name: mazevault
+  username: __SET_POSTGRES_USERNAME__
+  sslMode: require
+  secretMode: generated
+
+externalRedis:
+  host: __SET_REDIS_HOST__
+  port: 6380
+  database: 0
+  scheme: rediss
+  secretMode: generated
+  connectionQuery: abortConnect=false
+
+backend:
+  enabled: true
+  replicaCount: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  image:
+    repository: ghcr.io/mazevault/mazevault-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  podAnnotations: {}
+  podLabels: {}
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  livenessProbe:
+    path: /api/v1/health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    path: /api/v1/health
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  startupProbe:
+    path: /api/v1/health
+    initialDelaySeconds: 5
+    periodSeconds: 6
+    timeoutSeconds: 5
+    failureThreshold: 25
+  dataVolume:
+    enabled: true
+    mountPath: /data
+  urls:
+    frontend: ""
+    allowedOrigins: ""
+    corsAllowedOrigins: ""
+    server: ""
+    ocsp: ""
+  config:
+    MAZEVAULT_CUSTOMER_NAME: __SET_CUSTOMER_NAME__
+    MAZEVAULT_CUSTOMER_EMAIL: __SET_CUSTOMER_EMAIL__
+    MAZEVAULT_COMPANY_ID: __SET_COMPANY_ID__
+    MAZEVAULT_INSTANCE_ID: ""
+    MAZEVAULT_REGION: EU
+    MAZEVAULT_ENV: production
+    MAZEVAULT_ORCHESTRATOR_MODE: "false"
+    APP_VERSION: latest
+    PORT: "8080"
+    GIN_MODE: release
+    RUN_MIGRATIONS: "true"
+    COOKIE_SECURE: "true"
+    SWAGGER_ENABLED: "false"
+    LOG_LEVEL: info
+    SMTP_HOST: ""
+    SMTP_PORT: "587"
+    SMTP_USERNAME: ""
+    SMTP_FROM: ""
+    O365_EMAIL_ENABLED: "false"
+    O365_TENANT_ID: ""
+    O365_CLIENT_ID: ""
+    O365_SENDER_EMAIL: ""
+    O365_AUTH_METHOD: client_secret
+    O365_CERTIFICATE_PATH: ""
+    O365_CERTIFICATE_PASSWORD: ""
+    O365_MANAGED_IDENTITY_CLIENT_ID: ""
+    ENTRA_CLIENT_ID: ""
+    ENTRA_TENANT_ID: ""
+    ENTRA_REDIRECT_URI: ""
+    MAZEVAULT_ENFORCE_OIDC_NONCE: "false"
+    AZURE_AD_TENANT_ID: ""
+    AZURE_AD_ALLOWED_TENANTS: ""
+    AZURE_AD_JWKS_CACHE_TTL: "86400"
+    AZURE_MANAGED_IDENTITY_CLIENT_ID: ""
+    AZURE_TENANT_ID: ""
+    AZURE_DEPLOYMENT: "true"
+    LICENSE_SERVER_URL: https://license.mazevault.com
+    ENABLE_LICENSE_CHECK: "true"
+    AGENT_BINARY_CACHE_DIR: /data/agent-binaries
+    AGENT_BINARY_RELEASE_API_URL: ""
+    AGENT_ROLLOUT_PERCENTAGE: "100"
+    AGENT_MAX_CONCURRENT_DOWNLOADS: "10"
+    AGENT_DOWNLOAD_BASE_URL: ""
+    AGENT_VERSION: latest
+    MAZEVAULT_MODE: primary
+    MAZEVAULT_VERSION: latest
+    PRIMARY_BACKEND_URL: ""
+    GATEWAY_BOOTSTRAP_TOKEN: ""
+    GATEWAY_NAME: ""
+    MAZEVAULT_GATEWAY_ENVIRONMENT: ""
+    MAZEVAULT_GATEWAY_ENVIRONMENTS: ""
+    MAZEVAULT_GATEWAY_ROLE: primary
+    MAZEVAULT_GATEWAY_STATE_FILE: /etc/mazevault/gateway-state.json
+    MAZEVAULT_PRIMARY_ENVIRONMENTS: ""
+    MAZEVAULT_ENV_CANONICAL_ENFORCE: "false"
+    MAZEVAULT_ACME_DNS_PROVIDER: none
+    MAZEVAULT_KEYTAB_ENABLED: "true"
+    MAZEVAULT_KEYTAB_MAX_SIZE_MB: "10"
+    MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: "365"
+  extraEnv: []
+
+frontend:
+  enabled: true
+  replicaCount: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  image:
+    repository: ghcr.io/mazevault/mazevault-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  podAnnotations: {}
+  podLabels: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+  readinessProbe:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  livenessProbe:
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  urls:
+    docs: ""
+    domain: ""
+  config:
+    MAZEVAULT_ORCHESTRATOR_MODE: "false"
+  extraEnv: []
+
+docs:
+  enabled: true
+  replicaCount: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  image:
+    repository: ghcr.io/mazevault/mazevault-docs
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  podAnnotations: {}
+  podLabels: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  readinessProbe:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+  livenessProbe:
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 3
+  extraEnv: []
+
+ocsp:
+  enabled: true
+  replicaCount: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  image:
+    repository: ghcr.io/mazevault/mazevault-ocsp
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8081
+  podAnnotations: {}
+  podLabels: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 384Mi
+  readinessProbe:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+  livenessProbe:
+    path: /health
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 3
+  config:
+    RESPONSE_VALIDITY: 1h
+    CACHE_TTL: 10m
+  extraEnv: []
+
+podDisruptionBudget:
+  backend:
+    enabled: false
+    minAvailable: 1
+  frontend:
+    enabled: false
+    minAvailable: 1
+  docs:
+    enabled: false
+    minAvailable: 1
+  ocsp:
+    enabled: false
+    minAvailable: 1

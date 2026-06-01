@@ -1,0 +1,51 @@
+{{- if and .Values.backend.enabled .Values.podDisruptionBudget.backend.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "backend-pdb") }}
+  namespace: {{ include "mazevault-customer.namespace" . }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.backend.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "mazevault-customer.componentSelectorLabels" (dict "root" . "component" "backend") | nindent 6 }}
+---
+{{- end }}
+{{- if and .Values.frontend.enabled .Values.podDisruptionBudget.frontend.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "frontend-pdb") }}
+  namespace: {{ include "mazevault-customer.namespace" . }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.frontend.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "mazevault-customer.componentSelectorLabels" (dict "root" . "component" "frontend") | nindent 6 }}
+---
+{{- end }}
+{{- if and .Values.docs.enabled .Values.podDisruptionBudget.docs.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "docs-pdb") }}
+  namespace: {{ include "mazevault-customer.namespace" . }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.docs.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "mazevault-customer.componentSelectorLabels" (dict "root" . "component" "docs") | nindent 6 }}
+---
+{{- end }}
+{{- if and .Values.ocsp.enabled .Values.podDisruptionBudget.ocsp.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "ocsp-pdb") }}
+  namespace: {{ include "mazevault-customer.namespace" . }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.ocsp.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "mazevault-customer.componentSelectorLabels" (dict "root" . "component" "ocsp") | nindent 6 }}
+{{- end }}

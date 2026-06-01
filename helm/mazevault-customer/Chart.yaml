@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mazevault-customer
+description: Public customer-facing Helm chart for MazeVault on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "latest"

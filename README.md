@@ -90,3 +90,22 @@ cd /opt/mazevault
 | `renew-certs.sh` | Renew/rotate TLS certificates |
 | `docker-compose.yml` | Production compose (HTTPS-first) |
 | `.env.example` | Environment config template |
+
+## Helm Chart
+
+This repository also exposes the public customer Helm chart source in `helm/mazevault-customer`.
+
+MazeVault does not currently publish a hosted Helm repository. If you want to deploy with Helm, clone this repository or consume the release artifact, then install the chart from the local path.
+
+```bash
+git clone https://github.com/MazeVault/maze-release.git
+cd maze-release
+
+helm lint ./helm/mazevault-customer
+helm install mazevault ./helm/mazevault-customer \
+    --namespace mazevault \
+    --create-namespace \
+    -f ./helm/mazevault-customer/values.yaml
+```
+
+For real deployments, replace the placeholder values from `helm/mazevault-customer/values.yaml` with customer-specific overrides in your own values file or GitOps repository.

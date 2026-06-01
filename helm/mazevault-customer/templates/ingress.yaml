@@ -1,0 +1,90 @@
+{{- if .Values.global.ingress.enabled }}
+{{- $annotations := dict }}
+{{- range $key, $value := .Values.global.ingress.annotations }}
+{{- $_ := set $annotations $key $value }}
+{{- end }}
+{{- if and .Values.global.ingress.tls.enabled .Values.global.ingress.tls.clusterIssuer }}
+{{- $_ := set $annotations "cert-manager.io/cluster-issuer" .Values.global.ingress.tls.clusterIssuer }}
+{{- end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "mazevault-customer.fullname" . }}-app
+  namespace: {{ include "mazevault-customer.namespace" . }}
+  labels:
+    {{- include "mazevault-customer.componentLabels" (dict "root" . "component" "ingress") | nindent 4 }}
+  {{- if gt (len $annotations) 0 }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls.enabled }}
+  tls:
+    - secretName: {{ .Values.global.ingress.tls.secretName }}
+      hosts:
+        - {{ .Values.global.ingress.appHost }}
+        {{- if and .Values.docs.enabled .Values.global.ingress.docsHost }}
+        - {{ .Values.global.ingress.docsHost }}
+        {{- end }}
+        {{- if .Values.global.ingress.ocspHost }}
+        - {{ .Values.global.ingress.ocspHost }}
+        {{- end }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.global.ingress.appHost }}
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "backend") }}
+                port:
+                  number: {{ .Values.backend.service.port }}
+          - path: /swagger
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "backend") }}
+                port:
+                  number: {{ .Values.backend.service.port }}
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "backend") }}
+                port:
+                  number: {{ .Values.backend.service.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "frontend") }}
+                port:
+                  number: {{ .Values.frontend.service.port }}
+    {{- if and .Values.docs.enabled .Values.global.ingress.docsHost }}
+    - host: {{ .Values.global.ingress.docsHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "docs") }}
+                port:
+                  number: {{ .Values.docs.service.port }}
+    {{- end }}
+    {{- if and .Values.ocsp.enabled .Values.global.ingress.ocspHost }}
+    - host: {{ .Values.global.ingress.ocspHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "mazevault-customer.componentName" (dict "root" . "component" "ocsp") }}
+                port:
+                  number: {{ .Values.ocsp.service.port }}
+    {{- end }}
+{{- end }}
