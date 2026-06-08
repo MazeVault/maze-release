@@ -2,7 +2,36 @@
 
 Public source chart for customer-managed MazeVault Kubernetes deployments.
 
-MazeVault does not currently publish a hosted Helm repository. The supported public source is this chart in the release repository. Customers can vendor it into their own GitOps repository, package it internally, or install it directly from a checked-out copy of `maze-release`.
+MazeVault publishes this chart automatically as an OCI artifact to GHCR on every release tag.
+
+Primary distribution channel:
+
+- `oci://ghcr.io/mazevault/charts/mazevault-customer`
+
+Customers can consume the published OCI chart directly, mirror it to an internal registry, or vendor this source into their own GitOps repository.
+
+## Customer Upgrade Flow (Recommended)
+
+```bash
+echo "$GITHUB_TOKEN" | helm registry login ghcr.io -u YOUR_GITHUB_USER --password-stdin
+
+helm show chart oci://ghcr.io/mazevault/charts/mazevault-customer --version 1.2.3
+
+helm upgrade --install mazevault oci://ghcr.io/mazevault/charts/mazevault-customer \
+  --version 1.2.3 \
+  --namespace mazevault \
+  --create-namespace \
+  -f ./values.customer.yaml
+```
+
+For production CI/CD, keep values in your own repo and pin an explicit chart version.
+
+## Maintainer Release Process
+
+- Source of truth remains this folder: `helm/mazevault-customer`.
+- Tagging release `vX.Y.Z` in `maze-release` triggers automatic chart publish as version `X.Y.Z`.
+- Publish workflow: `.github/workflows/helm-chart-publish.yml`.
+- Any chart change must include README update and lint validation.
 
 ## Scope
 

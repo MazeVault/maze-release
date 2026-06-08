@@ -95,7 +95,35 @@ cd /opt/mazevault
 
 This repository also exposes the public customer Helm chart source in `helm/mazevault-customer`.
 
-MazeVault does not currently publish a hosted Helm repository. If you want to deploy with Helm, clone this repository or consume the release artifact, then install the chart from the local path.
+MazeVault publishes this chart automatically as an OCI artifact to GHCR on each release tag (`vX.Y.Z`).
+
+Primary distribution channel:
+
+- `oci://ghcr.io/mazevault/charts/mazevault-customer`
+
+If needed, customers can still clone this repository and install from local path.
+
+### Consume Published Chart (Recommended)
+
+```bash
+echo "$GITHUB_TOKEN" | helm registry login ghcr.io -u YOUR_GITHUB_USER --password-stdin
+
+helm pull oci://ghcr.io/mazevault/charts/mazevault-customer --version 1.2.3
+
+helm upgrade --install mazevault oci://ghcr.io/mazevault/charts/mazevault-customer \
+    --version 1.2.3 \
+    --namespace mazevault \
+    --create-namespace \
+    -f ./values.customer.yaml
+```
+
+### Update Policy
+
+- Every product release tag (`vX.Y.Z`) publishes matching chart version `X.Y.Z`.
+- Chart breaking changes require a major chart version bump and release note.
+- Customers should pin `--version` in their CI/CD and upgrade intentionally.
+
+### Local Source Install (Fallback)
 
 ```bash
 git clone https://github.com/MazeVault/maze-release.git
