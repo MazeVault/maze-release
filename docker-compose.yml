@@ -106,6 +106,12 @@ services:
       SMTP_USERNAME: ${SMTP_USERNAME:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_FROM: ${SMTP_FROM:-}
+      # Webhook HMAC signing secret (optional — enables X-Webhook-Signature on outbound webhooks)
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+      # SMSEagle SMS gateway (optional)
+      SMSEAGLE_URL: ${SMSEAGLE_URL:-}
+      SMSEAGLE_USERNAME: ${SMSEAGLE_USERNAME:-}
+      SMSEAGLE_PASSWORD: ${SMSEAGLE_PASSWORD:-}
       # Office365 OAuth2 Email (optional — takes priority over SMTP)
       O365_EMAIL_ENABLED: ${O365_EMAIL_ENABLED:-false}
       O365_TENANT_ID: ${O365_TENANT_ID:-}
@@ -165,6 +171,11 @@ services:
       MAZEVAULT_KEYTAB_ENABLED: ${MAZEVAULT_KEYTAB_ENABLED:-true}
       MAZEVAULT_KEYTAB_MAX_SIZE_MB: ${MAZEVAULT_KEYTAB_MAX_SIZE_MB:-10}
       MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: ${MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS:-365}
+      # Audit Log Retention (migration 000144 — configurable retention, default 365 days)
+      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
+      # mTLS Trusted Proxy CIDR Guard — comma-separated list of CIDR ranges whose
+      # X-Client-Cert / ssl-client-cert headers are accepted (leave empty to allow only direct TLS)
+      TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
     volumes:
       - certs:/certs:ro
       - backend_data:/app/data

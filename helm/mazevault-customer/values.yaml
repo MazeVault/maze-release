@@ -151,6 +151,7 @@ backend:
     O365_EMAIL_ENABLED: "false"
     O365_TENANT_ID: ""
     O365_CLIENT_ID: ""
+    # O365_CLIENT_SECRET is secret-only and resolved via global.keyVault.secretKeys.o365ClientSecret.
     O365_SENDER_EMAIL: ""
     O365_AUTH_METHOD: client_secret
     O365_CERTIFICATE_PATH: ""
@@ -173,6 +174,7 @@ backend:
     AGENT_ROLLOUT_PERCENTAGE: "100"
     AGENT_MAX_CONCURRENT_DOWNLOADS: "10"
     AGENT_DOWNLOAD_BASE_URL: ""
+    # AGENT_BINARY_GITHUB_TOKEN is secret-only and resolved via global.keyVault.secretKeys.agentBinaryGithubToken.
     AGENT_VERSION: latest
     MAZEVAULT_MODE: primary
     MAZEVAULT_VERSION: latest
@@ -189,6 +191,16 @@ backend:
     MAZEVAULT_KEYTAB_ENABLED: "true"
     MAZEVAULT_KEYTAB_MAX_SIZE_MB: "10"
     MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: "365"
+    # Audit Log Retention (default 365 days)
+    AUDIT_RETENTION_DAYS: "365"
+    # mTLS Trusted Proxy CIDR Guard (empty = direct TLS only)
+    TRUSTED_PROXY_CIDRS: ""
+    # Webhook HMAC signing secret (optional)
+    WEBHOOK_SECRET: ""
+    # SMSEagle SMS gateway (optional)
+    SMSEAGLE_URL: ""
+    SMSEAGLE_USERNAME: ""
+    SMSEAGLE_PASSWORD: ""
   extraEnv: []
 
 frontend:

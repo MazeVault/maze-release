@@ -324,6 +324,16 @@ SMTP_FROM=
 # MAZEVAULT_KEYTAB_ENABLED=true
 # MAZEVAULT_KEYTAB_MAX_SIZE_MB=10
 # MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS=365
+# Audit Log Retention
+# AUDIT_RETENTION_DAYS=365
+# mTLS Trusted Proxy CIDR Guard (optional — set when behind a TLS-terminating proxy)
+# TRUSTED_PROXY_CIDRS=
+# Webhook HMAC signing secret (optional — enables X-Webhook-Signature on outbound webhooks)
+# WEBHOOK_SECRET=
+# SMSEagle SMS gateway (optional)
+# SMSEAGLE_URL=
+# SMSEAGLE_USERNAME=
+# SMSEAGLE_PASSWORD=
 ENVEOF
   chmod 600 "${ENV_FILE}"
   ok "Generated ${ENV_FILE}"
@@ -479,6 +489,16 @@ services:
       MAZEVAULT_KEYTAB_ENABLED: ${MAZEVAULT_KEYTAB_ENABLED:-true}
       MAZEVAULT_KEYTAB_MAX_SIZE_MB: ${MAZEVAULT_KEYTAB_MAX_SIZE_MB:-10}
       MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: ${MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS:-365}
+      # Audit Log Retention (default 365 days)
+      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
+      # mTLS Trusted Proxy CIDR Guard
+      TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
+      # Webhook HMAC signing secret (optional)
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+      # SMSEagle SMS gateway (optional)
+      SMSEAGLE_URL: ${SMSEAGLE_URL:-}
+      SMSEAGLE_USERNAME: ${SMSEAGLE_USERNAME:-}
+      SMSEAGLE_PASSWORD: ${SMSEAGLE_PASSWORD:-}
       # Customer
       MAZEVAULT_CUSTOMER_NAME: "${MAZEVAULT_CUSTOMER_NAME}"
       MAZEVAULT_CUSTOMER_EMAIL: "${MAZEVAULT_CUSTOMER_EMAIL}"
