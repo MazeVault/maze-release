@@ -10,6 +10,8 @@ Primary distribution channel:
 
 Customers can consume the published OCI chart directly, mirror it to an internal registry, or vendor this source into their own GitOps repository.
 
+Partner onboarding and release readiness checklist: `../../CUSTOMER_RELEASE_CHECKLIST.md`.
+
 ## Customer Upgrade Flow (Recommended)
 
 ```bash

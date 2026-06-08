@@ -95,6 +95,8 @@ cd /opt/mazevault
 
 This repository also exposes the public customer Helm chart source in `helm/mazevault-customer`.
 
+Partner onboarding and release readiness checklist is available in `CUSTOMER_RELEASE_CHECKLIST.md`.
+
 MazeVault publishes this chart automatically as an OCI artifact to GHCR on each release tag (`vX.Y.Z`).
 
 Primary distribution channel:
