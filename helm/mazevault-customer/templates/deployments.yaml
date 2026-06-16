@@ -177,15 +177,27 @@ spec:
             failureThreshold: {{ .Values.backend.startupProbe.failureThreshold }}
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}
-          {{- if .Values.backend.dataVolume.enabled }}
+          {{- if or .Values.backend.dataVolume.enabled .Values.backend.agentBinaryCacheVolume.enabled }}
           volumeMounts:
+            {{- if .Values.backend.agentBinaryCacheVolume.enabled }}
+            - name: agent-binary-cache
+              mountPath: {{ .Values.backend.agentBinaryCacheVolume.mountPath }}
+            {{- end }}
+            {{- if .Values.backend.dataVolume.enabled }}
             - name: backend-data
               mountPath: {{ .Values.backend.dataVolume.mountPath }}
+            {{- end }}
           {{- end }}
-      {{- if .Values.backend.dataVolume.enabled }}
+      {{- if or .Values.backend.dataVolume.enabled .Values.backend.agentBinaryCacheVolume.enabled }}
       volumes:
+        {{- if .Values.backend.agentBinaryCacheVolume.enabled }}
+        - name: agent-binary-cache
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.backend.dataVolume.enabled }}
         - name: backend-data
           emptyDir: {}
+        {{- end }}
       {{- end }}
       {{- with .Values.global.nodeSelector }}
       nodeSelector:

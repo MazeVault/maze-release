@@ -120,6 +120,9 @@ backend:
     periodSeconds: 6
     timeoutSeconds: 5
     failureThreshold: 25
+  agentBinaryCacheVolume:
+    enabled: true
+    mountPath: /data/agent-binaries
   dataVolume:
     enabled: true
     mountPath: /data

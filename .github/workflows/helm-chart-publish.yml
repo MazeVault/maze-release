@@ -28,19 +28,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Set up yq
-        uses: mikefarah/yq@v4
+      - name: Preflight chart path
+        run: |
+          if [[ ! -d "$CHART_PATH" ]]; then
+            echo "::error::Chart directory not found: $CHART_PATH"
+            exit 1
+          fi
+
+          if [[ ! -f "$CHART_PATH/Chart.yaml" ]]; then
+            echo "::error::Chart manifest not found: $CHART_PATH/Chart.yaml"
+            exit 1
+          fi
 
       - name: Set chart version from tag
         id: version
         run: |
+          INPUT_VERSION="${{ github.event.inputs.chartVersion || '' }}"
           TAG="${GITHUB_REF_NAME:-manual}"
           VERSION="${TAG#v}"
-          if [[ -n "${{ inputs.chartVersion }}" ]]; then
-            VERSION="${{ inputs.chartVersion }}"
+          if [[ -n "$INPUT_VERSION" ]]; then
+            VERSION="$INPUT_VERSION"
             TAG="v${VERSION}"
           elif [[ "$TAG" == "manual" ]]; then
-            VERSION="$(yq '.version' "$CHART_PATH/Chart.yaml")"
+            VERSION="$(sed -n 's/^version:[[:space:]]*//p' "$CHART_PATH/Chart.yaml" | head -n 1 | tr -d '"' | xargs)"
+          fi
+
+          if [[ -z "$VERSION" ]]; then
+            echo "::error::Unable to resolve chart version from tag or $CHART_PATH/Chart.yaml"
+            exit 1
           fi
 
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
