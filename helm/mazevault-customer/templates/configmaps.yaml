@@ -66,6 +66,14 @@ data:
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
+            # Long-running rotation trigger endpoints synchronously run a gateway
+            # pre-execution probe (Key Vault reachability) that can block for up to
+            # ~2 minutes before returning 202. Nginx's default proxy_read_timeout is
+            # 60s, which would return 504 to the client while the backend keeps
+            # executing — the frontend then retries and fires duplicate rotations.
+            # Align with the ingress annotation (proxy-read-timeout: "300").
+            proxy_read_timeout 300s;
+            proxy_send_timeout 300s;
         }
     }
 ---
