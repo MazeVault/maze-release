@@ -162,6 +162,7 @@ O365_AUTH_METHOD=client_secret
 # License / auth
 LICENSE_SERVER_URL=https://license.mazevault.com
 ENABLE_LICENSE_CHECK=true
+ENABLE_ACME_SERVER=true
 BUILD_AUTH_SECRET=
 # Agent Binary Proxy (optional)
 AGENT_BINARY_GITHUB_TOKEN=

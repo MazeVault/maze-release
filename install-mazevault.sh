@@ -251,6 +251,8 @@ MAZEVAULT_REGION=EU
 LICENSE_SERVER_URL=https://license.mazevault.com
 # Enable license checking
 ENABLE_LICENSE_CHECK=true
+# Enable MazeVault's built-in ACME (RFC 8555) server scheduler (set "false" to disable)
+ENABLE_ACME_SERVER=true
 # Build Authentication Secret - SAME FOR ALL BUILDS
 # Used ONLY during initial license enrollment
 BUILD_AUTH_SECRET="admin only"
@@ -509,6 +511,7 @@ services:
       LICENSE_SERVER_URL: "${LICENSE_SERVER_URL}"
       BUILD_AUTH_SECRET: ${BUILD_AUTH_SECRET}
       ENABLE_LICENSE_CHECK: ${ENABLE_LICENSE_CHECK:-true}
+      ENABLE_ACME_SERVER: ${ENABLE_ACME_SERVER:-true}
     volumes:
       - certs:/certs:ro
       - backend_data:/app/data
