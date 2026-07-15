@@ -417,6 +417,8 @@ services:
       MAZEVAULT_JWT_KEY: ${JWT_SECRET:?JWT_SECRET required}
       MAZEVAULT_MASTER_KEY: ${MASTER_KEY:?MASTER_KEY required}
       MAZEVAULT_SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET required}
+      # HSM/KMS (Enterprise tier, optional)
+      # MAZEVAULT_HSM_BOOTSTRAP_KEY: ${HSM_BOOTSTRAP_KEY:-}
       # TLS
       MAZEVAULT_TLS_CERT_PATH: /certs
       # Application
@@ -544,6 +546,7 @@ services:
       DB_CONNECTION: postgres://${POSTGRES_USER:-mazevault}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-mazevault}?sslmode=disable
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       MAZEVAULT_MASTER_KEY: ${MASTER_KEY:?MASTER_KEY required}
+      # MAZEVAULT_HSM_BOOTSTRAP_KEY: ${HSM_BOOTSTRAP_KEY:-}
       MAZEVAULT_TLS_CERT_PATH: /certs
       SERVER_PORT: 8081
     volumes:

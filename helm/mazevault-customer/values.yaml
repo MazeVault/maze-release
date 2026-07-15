@@ -205,6 +205,8 @@ backend:
     SMSEAGLE_URL: ""
     SMSEAGLE_USERNAME: ""
     SMSEAGLE_PASSWORD: ""
+    # HSM/KMS (Enterprise tier, optional)
+    HSM_BOOTSTRAP_KEY: ""
   extraEnv: []
 
 frontend:
