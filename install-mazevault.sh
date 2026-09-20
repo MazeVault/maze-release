@@ -253,6 +253,9 @@ LICENSE_SERVER_URL=https://license.mazevault.com
 ENABLE_LICENSE_CHECK=true
 # Enable MazeVault's built-in ACME (RFC 8555) server scheduler (set "false" to disable)
 ENABLE_ACME_SERVER=true
+# Days to retain terminal-state pre-rotation backups before cleanup (default: 7).
+# Backups needing manual recovery (failed auto-rollback) are never auto-deleted.
+MAZEVAULT_ROTATION_BACKUP_RETENTION_DAYS=7
 # Build Authentication Secret - SAME FOR ALL BUILDS
 # Used ONLY during initial license enrollment
 BUILD_AUTH_SECRET="admin only"
@@ -514,6 +517,7 @@ services:
       BUILD_AUTH_SECRET: ${BUILD_AUTH_SECRET}
       ENABLE_LICENSE_CHECK: ${ENABLE_LICENSE_CHECK:-true}
       ENABLE_ACME_SERVER: ${ENABLE_ACME_SERVER:-true}
+      MAZEVAULT_ROTATION_BACKUP_RETENTION_DAYS: ${MAZEVAULT_ROTATION_BACKUP_RETENTION_DAYS:-7}
     volumes:
       - certs:/certs:ro
       - backend_data:/app/data

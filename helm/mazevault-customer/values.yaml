@@ -173,6 +173,7 @@ backend:
     LICENSE_SERVER_URL: https://license.mazevault.com
     ENABLE_LICENSE_CHECK: "true"
     ENABLE_ACME_SERVER: "true"
+    MAZEVAULT_ROTATION_BACKUP_RETENTION_DAYS: "7"
     AGENT_BINARY_CACHE_DIR: /data/agent-binaries
     AGENT_BINARY_RELEASE_API_URL: ""
     AGENT_ROLLOUT_PERCENTAGE: "100"
