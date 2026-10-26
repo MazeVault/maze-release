@@ -144,6 +144,8 @@ MASTER_KEY=$(generate_master_key)
 SESSION_SECRET=$(generate_secret 32)
 MAZEVAULT_TLS_SKIP_INIT=false
 MAZEVAULT_DOMAIN=localhost
+# CA (PEM, path inside the backend container) embedded into agent install scripts; empty = system trust store
+MAZEVAULT_CA_FILE=
 FRONTEND_PORT=443
 BACKEND_PORT=8443
 # SMTP / Email Notifications (optional)

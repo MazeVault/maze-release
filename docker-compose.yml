@@ -82,6 +82,8 @@ services:
       # MAZEVAULT_HSM_BOOTSTRAP_KEY: ${HSM_BOOTSTRAP_KEY:-}
       # TLS
       MAZEVAULT_TLS_CERT_PATH: /certs
+      # CA embedded into agent install scripts (optional; empty = agent hosts use their system trust store)
+      MAZEVAULT_CA_FILE: ${MAZEVAULT_CA_FILE:-}
       # License Registration
       MAZEVAULT_CUSTOMER_NAME: ${MAZEVAULT_CUSTOMER_NAME:?MAZEVAULT_CUSTOMER_NAME required}
       MAZEVAULT_CUSTOMER_EMAIL: ${MAZEVAULT_CUSTOMER_EMAIL:?MAZEVAULT_CUSTOMER_EMAIL required}
@@ -182,6 +184,7 @@ services:
       TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
     volumes:
       - certs:/certs:ro
+      - ${CUSTOM_CERT_DIR:-./certs}:/custom-certs:ro
       - backend_data:/app/data
     ports:
       - "${BACKEND_PORT:-8443}:8443"

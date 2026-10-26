@@ -179,6 +179,8 @@ backend:
     AGENT_ROLLOUT_PERCENTAGE: "100"
     AGENT_MAX_CONCURRENT_DOWNLOADS: "10"
     AGENT_DOWNLOAD_BASE_URL: ""
+    # CA (PEM, path inside the backend container) embedded into agent install scripts; empty = agent hosts use their system trust store.
+    MAZEVAULT_CA_FILE: ""
     # AGENT_BINARY_GITHUB_TOKEN is secret-only and resolved via global.keyVault.secretKeys.agentBinaryGithubToken.
     AGENT_VERSION: latest
     MAZEVAULT_MODE: primary

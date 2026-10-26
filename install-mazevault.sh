@@ -223,6 +223,9 @@ MAZEVAULT_JWT_KEY=$(generate_secret 32)
 MAZEVAULT_TLS_ENABLED=true
 MAZEVAULT_TLS_SKIP_INIT=false
 MAZEVAULT_TLS_CERT_PATH=/certs
+# CA (PEM, path inside the backend container) embedded into agent install scripts.
+# Leave empty when agent hosts already trust the server certificate (system trust store).
+MAZEVAULT_CA_FILE=
 COOKIE_SECURE=${COOKIE_SECURE}
 ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
 CORS_ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
@@ -424,6 +427,7 @@ services:
       # MAZEVAULT_HSM_BOOTSTRAP_KEY: ${HSM_BOOTSTRAP_KEY:-}
       # TLS
       MAZEVAULT_TLS_CERT_PATH: /certs
+      MAZEVAULT_CA_FILE: ${MAZEVAULT_CA_FILE:-}
       # Application
       MAZEVAULT_ENV: ${MAZEVAULT_ENV:-production}
       MAZEVAULT_ORCHESTRATOR_MODE: ${MAZEVAULT_ORCHESTRATOR_MODE:-false}
@@ -520,6 +524,7 @@ services:
       MAZEVAULT_ROTATION_BACKUP_RETENTION_DAYS: ${MAZEVAULT_ROTATION_BACKUP_RETENTION_DAYS:-7}
     volumes:
       - certs:/certs:ro
+      - ${CUSTOM_CERT_DIR:-./certs}:/custom-certs:ro
       - backend_data:/app/data
     ports:
       - "${BACKEND_PORT:-8443}:8443"
