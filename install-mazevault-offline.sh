@@ -175,6 +175,10 @@ AGENT_ROLLOUT_PERCENTAGE=100
 AGENT_MAX_CONCURRENT_DOWNLOADS=10
 AGENT_DOWNLOAD_BASE_URL=https://mzvapp01.creditas.cz
 AGENT_VERSION=latest
+# Public URL agents use to reach this primary/gateway (optional; empty = derive
+# from the request). Set when agents connect through a gateway or ingress whose
+# external URL differs from the internal one.
+# MAZEVAULT_GATEWAY_PUBLIC_URL=
 # KeyTab Management (optional)
 MAZEVAULT_KEYTAB_ENABLED=true
 MAZEVAULT_KEYTAB_MAX_SIZE_MB=10

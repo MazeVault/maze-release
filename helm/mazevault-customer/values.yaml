@@ -205,6 +205,10 @@ backend:
     # controller pods and/or DNS names of in-cluster reverse-proxy services.
     TRUSTED_PROXY_CIDRS: ""
     TRUSTED_PROXY_HOSTS: ""
+    # Request agent client certificates on the frontend 443 listener (MazeVault
+    # CA only); "false" = token auth only. Enables transparent agent mTLS through
+    # an ingress/gateway when paired with TRUSTED_PROXY_CIDRS.
+    AGENT_MTLS_ENABLED: "true"
     # Webhook HMAC signing secret (optional)
     WEBHOOK_SECRET: ""
     # SMSEagle SMS gateway (optional)
