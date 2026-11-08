@@ -200,8 +200,10 @@ backend:
     MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: "365"
     # Audit Log Retention (default 365 days)
     AUDIT_RETENTION_DAYS: "365"
-    # mTLS Trusted Proxy CIDR Guard (empty = direct TLS only)
+    # mTLS Trusted Proxy Guard (empty = direct TLS only). CIDRs of the ingress
+    # controller pods and/or DNS names of in-cluster reverse-proxy services.
     TRUSTED_PROXY_CIDRS: ""
+    TRUSTED_PROXY_HOSTS: ""
     # Webhook HMAC signing secret (optional)
     WEBHOOK_SECRET: ""
     # SMSEagle SMS gateway (optional)

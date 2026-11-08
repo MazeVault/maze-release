@@ -334,8 +334,12 @@ SMTP_FROM=
 # MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS=365
 # Audit Log Retention
 # AUDIT_RETENTION_DAYS=365
-# mTLS Trusted Proxy CIDR Guard (optional — set when behind a TLS-terminating proxy)
+# mTLS Trusted Proxy Guard (optional — CIDRs of additional TLS-terminating proxies;
+# the frontend service is trusted by name via TRUSTED_PROXY_HOSTS)
 # TRUSTED_PROXY_CIDRS=
+# TRUSTED_PROXY_HOSTS=frontend
+# Agent client-certificate requests on the frontend 443 listener (MazeVault CA only)
+# AGENT_MTLS_ENABLED=true
 # Webhook HMAC signing secret (optional — enables X-Webhook-Signature on outbound webhooks)
 # WEBHOOK_SECRET=
 # SMSEagle SMS gateway (optional)
@@ -502,8 +506,9 @@ services:
       MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: ${MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS:-365}
       # Audit Log Retention (default 365 days)
       AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
-      # mTLS Trusted Proxy CIDR Guard
+      # mTLS Trusted Proxy Guard (CIDRs and/or DNS names of reverse proxies)
       TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
+      TRUSTED_PROXY_HOSTS: ${TRUSTED_PROXY_HOSTS:-frontend}
       # Webhook HMAC signing secret (optional)
       WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
       # SMSEagle SMS gateway (optional)
@@ -610,6 +615,7 @@ services:
       - MAZEVAULT_DOMAIN=${MAZEVAULT_DOMAIN:-localhost}
       - MAZEVAULT_ORCHESTRATOR_MODE=${MAZEVAULT_ORCHESTRATOR_MODE:-false}
       - VITE_API_URL=https://${MAZEVAULT_DOMAIN:-localhost}:8443
+      - AGENT_MTLS_ENABLED=${AGENT_MTLS_ENABLED:-true}
     volumes:
       - certs:/etc/nginx/certs:ro
     ports:

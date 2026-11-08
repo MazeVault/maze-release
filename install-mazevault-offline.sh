@@ -181,8 +181,11 @@ MAZEVAULT_KEYTAB_MAX_SIZE_MB=10
 MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS=365
 # Audit Log Retention
 AUDIT_RETENTION_DAYS=365
-# mTLS Trusted Proxy CIDR Guard (optional)
+# mTLS Trusted Proxy Guard (optional CIDRs; frontend service trusted by name)
 TRUSTED_PROXY_CIDRS=
+TRUSTED_PROXY_HOSTS=frontend
+# Agent client-certificate requests on the frontend 443 listener (MazeVault CA only)
+AGENT_MTLS_ENABLED=true
 # Webhook HMAC signing secret (optional)
 WEBHOOK_SECRET=
 # SMSEagle SMS gateway (optional)

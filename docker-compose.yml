@@ -179,9 +179,12 @@ services:
       MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS: ${MAZEVAULT_KEYTAB_DEFAULT_EXPIRY_DAYS:-365}
       # Audit Log Retention (migration 000144 — configurable retention, default 365 days)
       AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
-      # mTLS Trusted Proxy CIDR Guard — comma-separated list of CIDR ranges whose
-      # X-Client-Cert / ssl-client-cert headers are accepted (leave empty to allow only direct TLS)
+      # mTLS Trusted Proxy Guard — X-Client-Cert / ssl-client-cert headers are accepted
+      # only from these peers: CIDR ranges (fixed networks) and/or DNS names of
+      # reverse-proxy services (resolved through the container DNS). The frontend
+      # service forwards the agent client certificate it verified on port 443.
       TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
+      TRUSTED_PROXY_HOSTS: ${TRUSTED_PROXY_HOSTS:-frontend}
     volumes:
       - certs:/certs:ro
       - ${CUSTOM_CERT_DIR:-./certs}:/custom-certs:ro
@@ -263,6 +266,9 @@ services:
       - DOCS_URL=${DOCS_URL:-https://localhost:8088}
       - MAZEVAULT_DOMAIN=${MAZEVAULT_DOMAIN:-localhost}
       - MAZEVAULT_ORCHESTRATOR_MODE=${MAZEVAULT_ORCHESTRATOR_MODE:-false}
+      # Request agent client certificates on 443 (MazeVault internal CA only; browsers
+      # are not prompted). The CA bundle is fetched from the backend and refreshed.
+      - AGENT_MTLS_ENABLED=${AGENT_MTLS_ENABLED:-true}
     volumes:
       - certs:/etc/nginx/certs:ro
     ports:
