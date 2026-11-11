@@ -73,9 +73,43 @@ curl -fsSL https://raw.githubusercontent.com/MazeVault/maze-release/main/import-
 
 ```bash
 cd /opt/mazevault
-./upgrade-mazevault.sh v1.1.0
-./rollback-mazevault.sh          # if needed
+./check-legacy-external-ca.sh                 # read-only pre-flight, see below
+./upgrade-mazevault.sh --version v1.1.0
+./rollback-mazevault.sh                        # if needed
 ```
+
+`upgrade-mazevault.sh` refuses to continue unless it has a **verified database dump** (the
+archive must decompress and end with PostgreSQL's completion marker). Database migrations
+are forward-only, so this dump is what `rollback-mazevault.sh` restores; the rollback
+checks the dump again before it stops anything.
+
+| Option | Effect |
+|--------|--------|
+| `--version TAG` | Release to upgrade to (required) |
+| `--dir PATH` | Installation directory (default `/opt/mazevault`); backups go to `PATH/backups` |
+| `--offline BUNDLE` | Load images from an offline bundle instead of pulling |
+| `--skip-db-backup` | Do not dump the database. Only when it is backed up and **verified** independently — the script's own rollback cannot restore the database then |
+| `--accept-legacy-external-ca-loss` | Upgrade although active legacy external CA configuration would be dropped (see below) |
+
+### Legacy external CA configuration (upgrading from 1.0.61 or older)
+
+Release 1.0.62 removes the tables behind the legacy *Configure External CA* flow
+(`external_ca_configs`, `external_ca_template_mappings`); organization CA accounts replace
+it. The migration drops the tables unconditionally. `check-legacy-external-ca.sh` tells you
+beforehand whether anything in them is still in use:
+
+```bash
+./check-legacy-external-ca.sh --dir /opt/mazevault
+# external database (Helm / managed PostgreSQL), password via PGPASSWORD or ~/.pgpass:
+DATABASE_URL='postgres://mazevault@db.example.com:5432/mazevault' ./check-legacy-external-ca.sh --database-url
+```
+
+The script only reads (every query runs in a `READ ONLY` transaction; encrypted provider
+settings are never selected). Exit code `0` = safe to upgrade, `2` = active legacy
+configuration found (it lists the configuration, its template mappings and the certificates
+issued through it), `1` = the check could not be completed. On exit code `2` recreate the
+connection as an organization CA account before upgrading. `upgrade-mazevault.sh` runs the
+same check and stops on active rows unless `--accept-legacy-external-ca-loss` is given.
 
 ## Files
 
@@ -83,8 +117,9 @@ cd /opt/mazevault
 |------|-------------|
 | `install-mazevault.sh` | Online installer (GHCR) |
 | `install-mazevault-offline.sh` | Offline installer (tar.gz) |
-| `upgrade-mazevault.sh` | Upgrade with backup |
-| `rollback-mazevault.sh` | Rollback to previous version |
+| `upgrade-mazevault.sh` | Upgrade with verified database backup |
+| `rollback-mazevault.sh` | Rollback to previous version (restores the database dump) |
+| `check-legacy-external-ca.sh` | Read-only pre-upgrade check for legacy external CA configuration |
 | `mirror-to-registry.sh` | Mirror to Nexus/Harbor |
 | `import-cert.sh` | Import custom TLS cert (PFX/PEM/DER) |
 | `renew-certs.sh` | Renew/rotate TLS certificates |

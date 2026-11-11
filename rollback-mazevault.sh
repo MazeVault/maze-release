@@ -52,6 +52,17 @@ OLD_VERSION=$(cat "${BACKUP_PATH}/version.txt" 2>/dev/null || echo "unknown")
 info "Rolling back MazeVault to version: ${OLD_VERSION}"
 info "Backup source: ${BACKUP_PATH}"
 
+# The restore drops the database first, so the dump must be proven usable before
+# anything is stopped or dropped: a valid gzip stream ending with pg_dump's marker.
+DB_DUMP="${BACKUP_PATH}/db_backup.sql.gz"
+if [[ "${SKIP_DB:-false}" != "true" ]] && [[ -f "${DB_DUMP}" ]]; then
+  if [[ ! -s "${DB_DUMP}" ]] || ! gzip -t "${DB_DUMP}" 2>/dev/null \
+     || ! gunzip -c "${DB_DUMP}" | tail -n 20 | grep -q "PostgreSQL database dump complete"; then
+    die "Database dump ${DB_DUMP} is empty, corrupt or incomplete. Refusing to drop the database. Use --skip-db to roll back configuration and images only."
+  fi
+  ok "Database dump verified"
+fi
+
 # ── Step 1: Stop services ──────────────────────────────────────────────────
 cd "${INSTALL_DIR}"
 info "Stopping services..."
@@ -95,13 +106,16 @@ if [[ "${SKIP_DB:-false}" != "true" ]] && [[ -f "${BACKUP_PATH}/db_backup.sql.gz
   done
   ok "Postgres is healthy."
 
-  # Drop and restore
+  # Drop and restore. Restoring on top of a database that could not be dropped
+  # would leave a mix of old and new objects, so both steps must succeed.
   ${COMPOSE_CMD} -p "${COMPOSE_PROJECT}" exec -T postgres \
-    psql -U "${POSTGRES_USER}" -c "DROP DATABASE IF EXISTS ${POSTGRES_DB};" 2>/dev/null || true
+    psql -U "${POSTGRES_USER}" -d postgres -v ON_ERROR_STOP=1 -c "DROP DATABASE IF EXISTS \"${POSTGRES_DB}\";" \
+    || die "Could not drop database ${POSTGRES_DB} (open connections?). Nothing was restored; the database is unchanged."
   ${COMPOSE_CMD} -p "${COMPOSE_PROJECT}" exec -T postgres \
-    psql -U "${POSTGRES_USER}" -c "CREATE DATABASE ${POSTGRES_DB};" 2>/dev/null || true
+    psql -U "${POSTGRES_USER}" -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE \"${POSTGRES_DB}\";" \
+    || die "Could not create database ${POSTGRES_DB}. Restore it manually from ${DB_DUMP}."
 
-  gunzip -c "${BACKUP_PATH}/db_backup.sql.gz" | \
+  gunzip -c "${DB_DUMP}" | \
     ${COMPOSE_CMD} -p "${COMPOSE_PROJECT}" exec -T postgres \
     psql -U "${POSTGRES_USER}" "${POSTGRES_DB}"
 
