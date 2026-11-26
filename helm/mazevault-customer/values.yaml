@@ -78,7 +78,7 @@ externalRedis:
   database: 0
   scheme: rediss
   secretMode: generated
-  connectionQuery: abortConnect=false
+  connectionQuery: ""
 
 backend:
   enabled: true
